@@ -31,6 +31,7 @@ class RunData:
     def add_single_run(self, run):
         """Creates dict of single run and appends to self.data"""
         self.data.append({
+            'id': run.id,
             'run_type': run.run_type,
             'date': run.date,
             'day': run.date.day,
