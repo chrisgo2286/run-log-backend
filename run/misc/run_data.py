@@ -25,6 +25,7 @@ class RunData:
             if len(run) > 0:
                 self.add_single_run(run[0])
             else:
+                curDate = date(self.year, self.month, day)
                 self.data.append({'day':day})
 
     def add_single_run(self, run):
