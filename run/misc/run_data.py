@@ -19,7 +19,7 @@ class RunData:
 
     def add_calendar_days(self):
         """Fills in days of the month and adds run if present"""
-        for day in range(1, monthrange(self.year, self.month)[1]):
+        for day in range(1, monthrange(self.year, self.month)[1] + 1):
             run = self.runs.filter(date__year=self.year, date__month=self.month,
                 date__day=day)
             if len(run) > 0:
@@ -37,7 +37,7 @@ class RunData:
             'day': run.date.day,
             'distance': run.distance,
             'time': run.time,
-            'comment': run.comment
+            'comment': run.comment or ""
         })
 
     def adjust_calendar_start(self):

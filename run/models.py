@@ -26,7 +26,7 @@ class Run(models.Model):
         max_digits=10, 
         decimal_places=2
     )
-    time = models.IntegerField()
+    time = models.IntegerField(blank=False, null=False)
     comment = models.TextField(blank=True, null=True)
 
     def __str__(self):
