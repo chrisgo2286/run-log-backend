@@ -26,7 +26,7 @@ class RunData:
                 self.add_single_run(run[0])
             else:
                 curDate = date(self.year, self.month, day)
-                self.data.append({'day':day})
+                self.data.append({'day':day, 'date': curDate})
 
     def add_single_run(self, run):
         """Creates dict of single run and appends to self.data"""
