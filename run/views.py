@@ -21,8 +21,8 @@ class RunView(viewsets.ModelViewSet):
 
 @api_view(('GET',))
 def calendar_view(request):
-    user = User.objects.get(id=request.user.id)
-    runs = Run.objects.filter(owner=user)
+    # user = User.objects.get(id=request.user.id)
+    runs = Run.objects.filter(owner=request.user)
     month = int(request.query_params['month'])
     year = int(request.query_params['year'])
     data = RunData(runs, month, year)
@@ -31,8 +31,8 @@ def calendar_view(request):
 
 @api_view(('GET',))
 def profile_view(request):
-    user = User.objects.get(id=request.user.id)
-    runs = Run.objects.filter(owner=user)
+    # user = User.objects.get(id=request.user.id)
+    runs = Run.objects.filter(owner=request.user)
     profile = RunnerProfile(runs)
     profile.compile()
     return Response(profile.data)
