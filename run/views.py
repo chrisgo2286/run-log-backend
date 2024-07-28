@@ -4,6 +4,7 @@ from .serializers import RunSerializer
 from .models import Run
 from .misc.run_data import RunData
 from .misc.monthly_stats import MonthlyStats
+from .misc.yearly_stats import YearlyStats
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
@@ -34,6 +35,14 @@ def monthly_stats_view(request):
     runs = Run.objects.filter(owner=request.user)
     month = int(request.query_params['month'])
     year = int(request.query_params['year'])
-    monthly_stats = monthly_stats(month, year, runs)
+    monthly_stats = MonthlyStats(month, year, runs)
     monthly_stats.compile()
     return Response(monthly_stats.data)
+
+@api_view(('GET',))
+def yearly_stats_view(request):
+    runs = Run.objects.filter(owner=request.user)
+    year = int(request.query_params['year'])
+    yearly_stats = YearlyStats(year, runs)
+    yearly_stats.compile()
+    return Response(yearly_stats.data)
