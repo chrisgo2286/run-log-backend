@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from .serializers import RunSerializer
 from .models import Run
 from .misc.run_data import RunData
-from .misc.runner_profile import RunnerProfile
+from .misc.monthly_stats import MonthlyStats
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
@@ -30,9 +30,10 @@ def calendar_view(request):
     return Response(data.data)
 
 @api_view(('GET',))
-def profile_view(request):
-    # user = User.objects.get(id=request.user.id)
+def monthly_stats_view(request):
     runs = Run.objects.filter(owner=request.user)
-    profile = RunnerProfile(runs)
-    profile.compile()
-    return Response(profile.data)
+    month = int(request.query_params['month'])
+    year = int(request.query_params['year'])
+    monthly_stats = monthly_stats(month, year, runs)
+    monthly_stats.compile()
+    return Response(monthly_stats.data)

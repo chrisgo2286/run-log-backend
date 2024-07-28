@@ -26,7 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api/calendar/', views.calendar_view),
-    path('api/profile/', views.profile_view),
+    path('api/monthly_stats/', views.monthly_stats_view),
     path('api/', include('dj_rest_auth.urls')),
     path('api/registration/', include('dj_rest_auth.registration.urls'))
 ]
