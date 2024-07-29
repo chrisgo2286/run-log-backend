@@ -22,7 +22,6 @@ class RunView(viewsets.ModelViewSet):
 
 @api_view(('GET',))
 def calendar_view(request):
-    # user = User.objects.get(id=request.user.id)
     runs = Run.objects.filter(owner=request.user)
     month = int(request.query_params['month'])
     year = int(request.query_params['year'])

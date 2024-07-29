@@ -8,7 +8,7 @@ class YearlyStats():
         self.year = year
         self.today = datetime.today()
         self.runs = self.filter_runs_by_period(runs)
-        self.data = {}
+        self.data = {'current_year': year}
 
     def compile(self):
         """Compiles all data for yearly stats to Data"""
@@ -40,7 +40,7 @@ class YearlyStats():
         first_day_of_year = datetime(self.today.year, 1, 1)
         days_elapsed = self.today - first_day_of_year
         weeks = days_elapsed.days / 7
-        self.data['weekly_average'] = self.data['total_distance'] / weeks
+        self.data['weekly_average'] = self.data['distance'] / weeks
     
     def calc_average_pace_ytd(self):
         """Enters average pace ytd to Data"""
