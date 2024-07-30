@@ -4,6 +4,8 @@ from django.db.models import Sum
 
 class MonthlyStats():
     """Class to compile data for monthly stats"""
+    DATA_KEYS = ['distance', 'time', 'weekly_average', 'pace']
+
     def __init__(self, month, year, runs):
         self.month = month
         self.year = year
@@ -14,15 +16,22 @@ class MonthlyStats():
     def compile(self):
         """Compiles data for monthly stats shown on Profile page"""
         self.get_month_name()
-        self.calc_distance()
-        self.calc_time()
-        self.calc_weekly_average()
-        self.calc_average_pace()
+        if self.runs:
+            self.compile_data()
+        else:
+            self.input_zero_values()
 
     def get_month_name(self):
         """Enters month's full name to Data"""
         self.data['current_month'] = self.dateObj.strftime("%B")
     
+    def compile_data(self):
+        """Compiles distance, time, weekly average and pace"""
+        self.calc_distance()
+        self.calc_time()
+        self.calc_weekly_average()
+        self.calc_average_pace()
+
     def calc_distance(self):
         """Enters total distance run for the month to Data"""
         sum = self.runs.aggregate(Sum('distance'))
@@ -58,6 +67,11 @@ class MonthlyStats():
         """Enters average pace for current month to Data"""
         self.data['average_pace'] = self.data['time'] / self.data['distance']
 
+    def input_zero_values(self):
+        """Enters zero for each field if no runs for that period"""
+        for key in self.DATA_KEYS:
+            self.data[key] = 0
+            
     def filter_runs_by_period(self, runs):
         """Returns queryset of runs for given month and year"""
         return runs.filter(date__month=self.month, date__year=self.year)

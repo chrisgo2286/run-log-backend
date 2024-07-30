@@ -3,6 +3,7 @@ from calendar import monthrange
 from django.db.models import Sum
 
 class YearlyStats():
+    DATA_KEYS = ['distance', 'time', 'monthly_average', 'weekly_average', 'pace']
     """Class to compile data for yearly stats"""
     def __init__(self, year, runs):
         self.year = year
@@ -12,6 +13,13 @@ class YearlyStats():
 
     def compile(self):
         """Compiles all data for yearly stats to Data"""
+        if self.runs:
+            self.compile_data()
+        else:
+            self.input_zero_values()
+
+    def compile_data(self):
+        """Compiles distance, time, month/weekly average and pace"""
         self.calc_distance()
         self.calc_time()
         self.calc_monthly_average_ytd()
@@ -46,6 +54,11 @@ class YearlyStats():
         """Enters average pace ytd to Data"""
         self.data['average_pace'] = self.data['time'] / self.data['distance']
     
+    def input_zero_values(self):
+        """Inputs zero values to data if no runs for period"""
+        for key in self.DATA_KEYS:
+            self.data[key] = 0
+
     def filter_runs_by_period(self, runs):
         """Returns queryset of given runs filtered by year"""
         return runs.filter(date__year=self.year)
