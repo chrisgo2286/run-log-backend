@@ -9,7 +9,7 @@ class MonthlyChart:
         self.month = month
         self.year = year
         self.runs = runs
-        self.data = {'labels': [], 'distance': []}
+        self.data = []
         self.periods = []
 
     def compile(self):
@@ -36,5 +36,4 @@ class MonthlyChart:
             distance = sum['distance__sum']
             dateObj = datetime(period['year'], period['month'], 1)
             label = dateObj.strftime("%B")
-            self.data['labels'].append(label)
-            self.data['distance'].append(distance)
+            self.data.append({ 'label': label, 'distance': distance })
