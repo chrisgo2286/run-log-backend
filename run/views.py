@@ -5,6 +5,7 @@ from .models import Run
 from .misc.run_data import RunData
 from .misc.monthly_stats import MonthlyStats
 from .misc.yearly_stats import YearlyStats
+from .misc.monthly_chart import MonthlyChart
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
@@ -45,3 +46,12 @@ def yearly_stats_view(request):
     yearly_stats = YearlyStats(year, runs)
     yearly_stats.compile()
     return Response(yearly_stats.data)
+
+@api_view(('GET',))
+def monthly_chart_view(request):
+    runs = Run.objects.filter(owner=request.user)
+    month = int(request.query_params['month'])
+    year = int(request.query_params['year'])
+    monthly_chart = MonthlyChart(month, year, runs)
+    monthly_chart.compile()
+    return Response(monthly_chart.data)
