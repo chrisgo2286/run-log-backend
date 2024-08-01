@@ -1,6 +1,5 @@
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
-from calendar import monthrange
 from django.db.models import Sum
 
 class MonthlyChart:

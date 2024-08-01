@@ -26,7 +26,12 @@ class Run(models.Model):
         max_digits=10, 
         decimal_places=2
     )
-    time = models.IntegerField(blank=False, null=False)
+    time = models.DecimalField(
+        blank=False, 
+        null=False,
+        max_digits=10,
+        decimal_places=2
+    )
     comment = models.TextField(blank=True, null=True)
 
     def __str__(self):

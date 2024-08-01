@@ -29,6 +29,7 @@ urlpatterns = [
     path('api/monthly_stats/', views.monthly_stats_view),
     path('api/yearly_stats/', views.yearly_stats_view),
     path('api/monthly_chart/', views.monthly_chart_view),
+    path('api/weekly_chart/', views.weekly_chart_view),
     path('api/', include('dj_rest_auth.urls')),
     path('api/registration/', include('dj_rest_auth.registration.urls'))
 ]
