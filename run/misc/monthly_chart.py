@@ -18,12 +18,11 @@ class MonthlyChart:
         self.compile_monthly_data()
 
     def compile_periods(self):
-        """Returns list of 12 months from given period back"""
-        self.periods.append({ 'month': self.month, 'year': self.year })
+        """Returns list of 6 months from given period back"""
         dateObj = datetime(self.year, self.month, 1)
-        for i in range(11):
-            prev_period = dateObj - relativedelta(months=1)
-            self.periods.append({ 'month': prev_period.month, 'year': prev_period.year })
+        for i in range(5):
+            prev_period = dateObj - relativedelta(months=i)
+            self.periods.insert(0,{ 'month': prev_period.month, 'year': prev_period.year })
 
     def compile_monthly_data(self):
         """Compiles distance and month name for each period"""
@@ -35,5 +34,5 @@ class MonthlyChart:
             sum = runs.aggregate(Sum('distance'))
             distance = sum['distance__sum']
             dateObj = datetime(period['year'], period['month'], 1)
-            label = dateObj.strftime("%B")
+            label = dateObj.strftime("%b")
             self.data.append({ 'label': label, 'distance': distance })
