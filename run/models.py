@@ -35,4 +35,4 @@ class Run(models.Model):
     comment = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f'{self.date:%m-%d-%Y} - {self.distance}KM'
+        return f'{self.owner.username} - {self.date:%m-%d-%Y} - {self.distance}KM'
