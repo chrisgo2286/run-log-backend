@@ -7,6 +7,7 @@ from .misc.monthly_stats import MonthlyStats
 from .misc.yearly_stats import YearlyStats
 from .misc.monthly_chart import MonthlyChart
 from .misc.weekly_chart import WeeklyChart
+from .misc.run_type_chart import RunTypeChart
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
@@ -64,3 +65,13 @@ def weekly_chart_view(request):
     weekly_chart = WeeklyChart(start_date, runs)
     weekly_chart.compile()
     return Response(weekly_chart.data)
+
+@api_view(('GET',))
+def run_type_chart_view(request):
+    runs = Run.objects.filter(owner=request.user)
+    month = int(request.query_params['month'])
+    year = int(request.query_params['year'])
+    run_type_chart = RunTypeChart(month, year, runs)
+    run_type_chart.compile()
+    print(run_type_chart.data)
+    return Response(run_type_chart.data)
