@@ -1,5 +1,5 @@
 from dateutil.relativedelta import relativedelta
-from datetime import datetime
+from datetime import datetime, date
 from django.db.models import Sum
 
 class MonthlyChart:
@@ -7,7 +7,7 @@ class MonthlyChart:
     def __init__(self, month, year, runs):
         self.month = month
         self.year = year
-        self.runs = runs
+        self.runs = self.filter_runs(runs)
         self.data = []
         self.periods = []
 
@@ -35,3 +35,8 @@ class MonthlyChart:
             dateObj = datetime(period['year'], period['month'], 1)
             label = dateObj.strftime("%b")
             self.data.append({ 'label': label, 'distance': distance })
+
+    def filter_runs(self, runs):
+        """Filters runs for only current dates"""
+        cur_date = date.today()
+        return runs.filter(date__lte=cur_date)

@@ -27,10 +27,22 @@ class Run(models.Model):
         decimal_places=2
     )
     time = models.DecimalField(
-        blank=False, 
-        null=False,
+        blank=True, 
+        null=True,
         max_digits=10,
         decimal_places=2
+    )
+    hours = models.IntegerField(
+        blank=True,
+        null=True,
+    )
+    minutes = models.IntegerField(
+        blank=True,
+        null=True,
+    )
+    seconds = models.IntegerField(
+        blank=True,
+        null=True,
     )
     comment = models.TextField(blank=True, null=True)
 

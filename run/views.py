@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from .serializers import RunSerializer
 from .models import Run
-from .misc.run_data import RunData
+from .misc.calendar import Calendar
 from .misc.monthly_stats import MonthlyStats
 from .misc.yearly_stats import YearlyStats
 from .misc.monthly_chart import MonthlyChart
@@ -28,9 +28,9 @@ def calendar_view(request):
     runs = Run.objects.filter(owner=request.user)
     month = int(request.query_params['month'])
     year = int(request.query_params['year'])
-    data = RunData(runs, month, year)
-    data.compile()
-    return Response(data.data)
+    calendar = Calendar(runs, month, year)
+    calendar.compile()
+    return Response(calendar.data)
 
 @api_view(('GET',))
 def monthly_stats_view(request):
@@ -73,5 +73,4 @@ def run_type_chart_view(request):
     year = int(request.query_params['year'])
     run_type_chart = RunTypeChart(month, year, runs)
     run_type_chart.compile()
-    print(run_type_chart.data)
     return Response(run_type_chart.data)

@@ -1,5 +1,5 @@
 from dateutil.relativedelta import relativedelta
-from datetime import datetime
+from datetime import date
 from django.db.models import Sum
 from run.models import RUN_CHOICES
 
@@ -20,8 +20,10 @@ class RunTypeChart:
             self.data.append({"name": run_type[0], "distance": distance})
 
     def filter_runs_by_period(self, runs):
-        """Filters runs by month and year"""
-        return runs.filter(date__year=self.year, date__month=self.month)
+        """Filters runs by month and year and current dates only"""
+        cur_date = date.today()
+        return runs.filter(date__lte=cur_date, date__year=self.year, 
+            date__month=self.month)
 
     def calc_total_distance(self, runs):
         """Returns sum of distance for given runs"""

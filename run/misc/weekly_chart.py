@@ -1,11 +1,11 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from django.db.models import Sum
 
 class WeeklyChart:
     """Class to compile data for Weekly Chart"""
     def __init__(self, start_date, runs):
         self.start_date = start_date
-        self.runs = runs
+        self.runs = self.filter_runs(runs)
         self.periods = []
         self.data = []
 
@@ -38,3 +38,8 @@ class WeeklyChart:
             date__gte=period['start'], 
             date__lte=period['end']
         )
+    
+    def filter_runs(self, runs):
+        """Returns runs filtered for current dates only"""
+        cur_date = date.today()
+        return runs.filter(date__lte=cur_date)

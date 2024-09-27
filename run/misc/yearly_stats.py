@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 from calendar import monthrange
 from django.db.models import Sum
 
@@ -32,9 +32,18 @@ class YearlyStats():
         self.data['distance'] = float(sum['distance__sum'])
 
     def calc_time(self):
-        """Enters total time run for year to Data"""
-        sum = self.runs.aggregate(Sum('time'))
-        self.data['time'] = float(sum['time__sum'])
+        """Enters total time run for the month to Data"""
+        hours = self.calc_time_unit_total("hours")
+        minutes = self.calc_time_unit_total("minutes")
+        seconds = self.calc_time_unit_total("seconds")
+        self.data["time"] = (hours * 60) + minutes + (seconds / 60)
+
+    def calc_time_unit_total(self, unit):
+        """Returns total of time unit (hours, minutes or seconds)"""
+        sum = self.runs.aggregate(Sum(unit))
+        if sum:
+            return float(sum[f'{unit}__sum'])
+        return 0.0
 
     def calc_monthly_average_ytd(self):
         """Enters monthly average km run year to date to Data"""
@@ -60,5 +69,7 @@ class YearlyStats():
             self.data[key] = 0
 
     def filter_runs_by_period(self, runs):
-        """Returns queryset of given runs filtered by year"""
-        return runs.filter(date__year=self.year)
+        """Returns queryset of given runs filtered by year and for current
+        dates only"""
+        cur_date = date.today()
+        return runs.filter(date__lte=cur_date, date__year=self.year)

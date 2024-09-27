@@ -11,8 +11,6 @@ class RunData:
 
     def compile(self):
         """Compiles all run data"""
-        self.runs = self.runs.filter(date__month=self.month, 
-            date__year=self.year)
         self.add_calendar_days()
         self.adjust_calendar_start()
         self.adjust_calendar_end()        
@@ -36,7 +34,9 @@ class RunData:
             'date': run.date,
             'day': run.date.day,
             'distance': run.distance,
-            'time': run.time,
+            'hours': run.hours,
+            'minutes': run.minutes,
+            'seconds': run.seconds,
             'comment': run.comment or ""
         })
 
