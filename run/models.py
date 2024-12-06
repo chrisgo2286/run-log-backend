@@ -32,19 +32,22 @@ class Run(models.Model):
         max_digits=10,
         decimal_places=2
     )
-    hours = models.IntegerField(
-        blank=True,
-        null=True,
-    )
-    minutes = models.IntegerField(
-        blank=True,
-        null=True,
-    )
-    seconds = models.IntegerField(
-        blank=True,
-        null=True,
-    )
+    hours = models.IntegerField(blank=True, null=True)
+    minutes = models.IntegerField(blank=True, null=True)
+    seconds = models.IntegerField(blank=True, null=True)
     comment = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f'{self.owner.username} - {self.date:%m-%d-%Y} - {self.distance}KM'
+    
+class TrainingBlock(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    athlete = models.CharField(max_length=50, blank=True, null=True)
+    title = models.CharField(max_length=100, blank=False, null=False)
+    startDate = models.DateField(blank=False, null=False)
+    endDate = models.DateField(blank=False, null=False)
+    cycleLength = models.IntegerField(blank=False, null=False)
+    goals = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.title}: {self.startDate} - {self.endDate}"

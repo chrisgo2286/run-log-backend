@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Run
+from .models import Run, TrainingBlock
 
 class RunSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,4 +14,18 @@ class RunSerializer(serializers.ModelSerializer):
             'minutes', 
             'seconds', 
             'comment'
+        )
+
+class TrainingBlockSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TrainingBlock
+        fields = (
+            'id', 
+            'owner', 
+            'athlete',
+            'title',
+            'startDate',
+            'endDate',
+            'cycleLength',
+            'goals'
         )

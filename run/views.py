@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from .serializers import RunSerializer
-from .models import Run
+from .serializers import TrainingBlockSerializer
+from .models import Run, TrainingBlock
 from .misc.calendar import Calendar
+from .misc.training_block_data import TrainingBlockData
 from .misc.monthly_stats import MonthlyStats
 from .misc.yearly_stats import YearlyStats
 from .misc.monthly_chart import MonthlyChart
@@ -22,6 +24,16 @@ class RunView(viewsets.ModelViewSet):
     
     def get_queryset(self):
         return self.queryset.filter(owner=self.request.user)
+    
+class TrainingBlockView(viewsets.ModelViewSet):
+    serializer_class = TrainingBlockSerializer
+    queryset = TrainingBlock.objects.all()
+
+    def perform_create(self, serializer):
+        return serializer.save(owner=self.request.user)
+    
+    def get_queryset(self):
+        return self.queryset.filter(owner=self.request.user)
 
 @api_view(('GET',))
 def calendar_view(request):
@@ -31,6 +43,14 @@ def calendar_view(request):
     calendar = Calendar(runs, month, year)
     calendar.compile()
     return Response(calendar.data)
+
+@api_view(("GET",))
+def training_block_data_view(request):
+    runs = Run.objects.filter(owner=request.user)
+    id = int(request.query_params["id"])
+    training_block = TrainingBlockData(runs, id)
+    training_block.compile_data()
+    return Response(training_block.data)
 
 @api_view(('GET',))
 def monthly_stats_view(request):
@@ -74,3 +94,4 @@ def run_type_chart_view(request):
     run_type_chart = RunTypeChart(month, year, runs)
     run_type_chart.compile()
     return Response(run_type_chart.data)
+
