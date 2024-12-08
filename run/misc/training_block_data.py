@@ -17,18 +17,18 @@ class TrainingBlockData:
         curDate = self.start_date
         cycle_data = []
         while curDate <= self.end_date:
-            dateStr = curDate.strftime("%m/%d")
-            dayName = curDate.strftime("%a")
-            data = {"date": dateStr, "day": dayName}
+            label = f"{curDate.strftime('%m/%#d')} {curDate.strftime('%a')}"
+            data = {"label": label}
             curRun = runs.filter(date=curDate)
             if curRun:
-                data["id"] = curRun.id
-                data["run_type"] = curRun.run_type
-                data["distance"] = curRun.distance
-                data["hours"] = curRun.hours
-                data["minutes"] = curRun.minutes
-                data["seconds"] = curRun.seconds
-                data["comment"] = curRun.comment
+                data["id"] = curRun[0].id
+                data["run_type"] = curRun[0].run_type
+                data["date"] = curRun[0].date
+                data["distance"] = curRun[0].distance
+                data["hours"] = curRun[0].hours
+                data["minutes"] = curRun[0].minutes
+                data["seconds"] = curRun[0].seconds
+                data["comment"] = curRun[0].comment
             cycle_data.append(data)
 
             if len(cycle_data) == self.cycle_length:
