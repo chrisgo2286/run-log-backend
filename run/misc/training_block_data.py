@@ -4,41 +4,60 @@ from run.models import TrainingBlock
 class TrainingBlockData:
     """Class to compile and store run data for given training block"""
     def __init__(self, runs, id):
-        self.runs = runs
         self.training_block = TrainingBlock.objects.filter(id=id)[0]
         self.cycle_length = self.training_block.cycleLength
         self.start_date = self.training_block.startDate
         self.end_date = self.training_block.endDate
-        self.data = []
+        self.runs = self.filter_runs(runs)
+        self.data = {"totals": [], "trainingData": []}
+        self.cycle_data = []
+        self.cycle_total = 0
+
+    def filter_runs(self, runs):
+        """Filters runs for start and end dates"""
+        return runs.filter(date__gte=self.start_date, 
+            date__lte=self.end_date)
 
     def compile_data(self):
-        """Populates data with list of list of runs based on cycle length"""
-        runs = self.filter_runs()
-        curDate = self.start_date
-        cycle_data = []
-        while curDate <= self.end_date:
-            label = f"{curDate.strftime('%m/%#d')} {curDate.strftime('%a')}"
-            data = {"label": label}
-            curRun = runs.filter(date=curDate)
-            if curRun:
-                data["id"] = curRun[0].id
-                data["run_type"] = curRun[0].run_type
-                data["date"] = curRun[0].date
-                data["distance"] = curRun[0].distance
-                data["hours"] = curRun[0].hours
-                data["minutes"] = curRun[0].minutes
-                data["seconds"] = curRun[0].seconds
-                data["comment"] = curRun[0].comment
-            cycle_data.append(data)
+        """Returns list of cycle data"""
+        self.curDate = self.start_date
+        while self.curDate <= self.end_date:
+            data = self.compile_day_data()
+            self.compile_cycle_data(data)
+            self.curDate = self.curDate + timedelta(days=1)
+        self.add_final_cycle()
 
-            if len(cycle_data) == self.cycle_length:
-                self.data.append(cycle_data)
-                cycle_data = []
-            curDate = curDate + timedelta(days=1)
-        if cycle_data:
-            self.data.append(cycle_data)
+    def compile_day_data(self):
+        label = f"{self.curDate.strftime('%m/%#d')} {self.curDate.strftime('%a')}"
+        return self.add_run_to_data({"label": label})
 
-    def filter_runs(self):
-        """Filters runs for start and end dates"""
-        return self.runs.filter(date__gte=self.start_date, 
-            date__lte=self.end_date)
+    def add_run_to_data(self, data):
+        curRun = self.runs.filter(date=self.curDate)
+        if curRun:
+            data = self.add_run(data, curRun[0])
+            self.cycle_total += curRun[0].distance
+        return data
+
+    def add_run(self, data, run):
+        """Adds run to data dict"""
+        data["id"] = run.id
+        data["run_type"] = run.run_type
+        data["date"] = run.date
+        data["distance"] = run.distance
+        data["hours"] = run.hours
+        data["minutes"] = run.minutes
+        data["seconds"] = run.seconds
+        data["comment"] = run.comment
+        return data
+
+    def compile_cycle_data(self, data):
+        self.cycle_data.append(data)
+        if len(self.cycle_data) == self.cycle_length:
+            self.data["trainingData"].append(self.cycle_data)
+            self.data["totals"].append(round(self.cycle_total,0))
+            self.cycle_data = []
+            self.cycle_total = 0
+
+    def add_final_cycle(self):
+        if self.cycle_data:
+            self.data["trainingData"].append(self.cycle_data)
